@@ -13,6 +13,7 @@
     "react-scripts": "3.2.0",
     "redux": "^4.0.4",
     "redux-thunk": "^2.3.0",
+    "serve": "^11.2.0",
     "typeface-roboto": "0.0.75"
   },
   "scripts": {
@@ -39,5 +40,9 @@
   },
   "devDependencies": {
     "@storybook/react": "^5.2.6"
+  },
+  "engines": {
+    "npm": "6.9.0",
+    "node": "v10.16.0"
   }
 }
