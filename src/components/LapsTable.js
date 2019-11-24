@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import { Typography, Divider } from '@material-ui/core'
+import { Typography } from '@material-ui/core'
 import TimerDisplay from './TimerDisplay'
 
 const useStyles = makeStyles(theme => ({
@@ -23,18 +23,25 @@ const useStyles = makeStyles(theme => ({
     Returns list of formated lap times in descending order,
     fasted and slowest times are highlighted
 */
-const Laps = ({ laps }) => {
+const Laps = ({ laps = [] }) => {
     const classes = useStyles()
 
     // only iterate list and apply conditional style if ther is more than one lap time
-    if (laps.length > 1) {
+    if (laps.length === 1) {
+        return (
+            <li key={laps.num} className={classes.listEl}>
+                <span>#{laps[0].num}</span>
+                <TimerDisplay fontSize={18} epochTime={laps[0].time} />
+            </li>
+        )
+    } else if (laps.length > 1) {
         // find fastest and slowest lap times
         const times = laps.map(lap => (lap.time))
         const min = Math.min(...times)
         const max = Math.max(...times)
 
         return laps.slice(0).reverse().map((lap) => (
-            < li key={lap.num} className={classes.listEl} style={(max === lap.time) ? { color: 'red' } : ((min === lap.time) ? { color: 'green' } : {})}>
+            <li key={lap.num} className={classes.listEl} style={(max === lap.time) ? { color: 'red' } : ((min === lap.time) ? { color: 'green' } : {})}>
                 <span>#{lap.num}</span>
                 <TimerDisplay fontSize={18} epochTime={lap.time} />
             </li >
@@ -42,10 +49,7 @@ const Laps = ({ laps }) => {
         )
     } else {
         return (
-            <li key={laps.num} className={classes.listEl}>
-                <span>#{laps[0].num}</span>
-                <TimerDisplay fontSize={18} epochTime={laps[0].time} />
-            </li>
+            <li key={laps.num} className={classes.listEl} />
         )
     }
 }
@@ -58,13 +62,14 @@ const Laps = ({ laps }) => {
 */
 const LapsTable = ({ laps = [], className = {} }) => {
     const classes = useStyles()
+    // only re-render if laps changes
+    const lapsList = useMemo(() => <Laps laps={laps} />, [laps])
 
     return (
         <div className={[classes.root, className].join(" ")} >
+
             <Typography component="ul" className={classes.list}>
-                {laps.length > 0 && (
-                    <Laps laps={laps} />
-                )}
+                {lapsList}
             </Typography>
         </div>
     )

@@ -12,7 +12,7 @@ const useStyles = makeStyles(theme => ({
 function App() {
   const classes = useStyles()
   return (
-    <div className="App" className={classes.app}>
+    <div className={classes.app}>
       <StopWatch />
     </div>
   );

@@ -3,6 +3,7 @@ import thunk from 'redux-thunk'
 import { Provider as ReduxProvider } from 'react-redux'
 import { createStore, compose, applyMiddleware } from 'redux'
 import reducers from '../src/redux/reducers'
+import testData from './testData'
 
 const composeEnhancer = compose(
     applyMiddleware(thunk),
@@ -11,14 +12,14 @@ const composeEnhancer = compose(
 
 const store = createStore(
     reducers,
-    null,
+    testData,
     composeEnhancer,
 )
 
-export default function Provider({ children }) {
+export default function Provider({ story }) {
     return (
         <ReduxProvider store={store}>
-            {children}
+            {story}
         </ReduxProvider>
     )
 }

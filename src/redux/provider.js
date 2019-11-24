@@ -1,3 +1,4 @@
+import React from 'react'
 import { createStore, applyMiddleware, compose } from 'redux'
 import thunk from 'redux-thunk'
 import reducers from './reducers'
@@ -10,14 +11,13 @@ const composeEnhancer = compose(
 
 const store = createStore(
     reducers,
-    testData,
     composeEnhancer,
 )
 
-export default function Provider({ story }) {
+export default function Provider({ children }) {
     return (
         <ReduxProvider store={store}>
-            {story}
+            {children}
         </ReduxProvider>
     )
 }

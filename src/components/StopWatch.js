@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useReducer, useEffect, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { start, stop, addLap, reset } from '../redux/actions'
 import { makeStyles } from '@material-ui/core/styles'
@@ -21,37 +21,52 @@ const useStyles = makeStyles(theme => ({
         margin: "40px 0 30px 0"
     },
     laps: {
-        '& > ul': {
-            margin: '0 10px'
-        }
+
     }
 }))
 
+// local useReducer. not to be confused with Redux reducer
+function runtimeReducer(state, action) {
+    switch (action.type) {
+        case 'SET':
+            return action.payload
+        case 'RESET':
+            return 0
+        default:
+            return state
+    }
+}
+
 function StopWatch({ className = {} }) {
-    const [runtime, setRuntime] = useState(0) // Runtime is stored locally to avoid excessive dispatch calls by setInterval.
+    const classes = useStyles()
+
+    // Runtime is stored locally to avoid excessive dispatch calls to Redux by setInterval. useReducer HOOK not to be confused with Redux
+    const [runtime, runtimeDispatch] = useReducer(runtimeReducer, 0)
+
+    // Using Redux
     const [timer, laps] = useSelector(state => ([state.timer, state.laps]))
     const dispatch = useDispatch()
-    const classes = useStyles()
 
     /* 
         useEffect is called when ever timer state is changed. 
+        As setInterval does not provide guaranteed timing, system date is used
+        by offseting current epoch time against how long the time has been running.
+        This allows the timer to maintain accurate time whenever timer is stoped or started.  
     */
     useEffect(() => {
         let id
 
         if (timer.isRunning) {
-            /*
-                As setInterval does not provide guaranteed timing, system date is used
-                by offseting current epoch time against how long the time has been running.
-                This allows the timer to maintain accurate time whenever timer is stoped or started.  
+            /* 
+                NOW is offest by how long time has been running, 
+                this gives a relative start time from NOW and avoids timer from jumping ahead when restarted.
             */
-
-            // now is offest by how long time has been running
             const startTime = Date.now() - runtime
 
             id = setInterval(() => {
-                // new runtime
-                setRuntime(Date.now() - startTime)
+                // new runtime (ms)
+                // setRuntime(Date.now() - startTime)
+                runtimeDispatch({ type: 'SET', payload: Date.now() - startTime })
             }, 10)
         }
 
@@ -59,20 +74,20 @@ function StopWatch({ className = {} }) {
             // clear interval when timer is stopped or unmounted
             clearInterval(id)
         }
-    }, [timer])
+    }, [timer, runtime])
+
+    // memoized provides stable dependecy so can be called by useEffect 
+    const resetTimer = useCallback(() => {
+        dispatch(reset())
+        runtimeDispatch({ type: 'RESET' })
+    }, [dispatch])
 
     useEffect(() => {
         // clear laps list and stop timer when component is unmounted
         return () => {
             resetTimer()
         }
-    }, [])
-
-    function resetTimer() {
-        dispatch(stop())
-        dispatch(reset())
-        setRuntime(0)
-    }
+    }, [resetTimer])
 
     return (
         <div className={[classes.root, className].join(" ")}>
