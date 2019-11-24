@@ -1,4 +1,7 @@
-// useing thunk middleware
+/*
+    Add lap time
+    Expects total runtime of timer in ms 
+*/
 export const addLap = (currentTime) => {
     return (dispatch, getState) => {
         const prevLaps = getState().laps
@@ -23,6 +26,17 @@ export const addLap = (currentTime) => {
     }
 }
 
+// stop timer and reset lap times
 export const reset = () => ({
     type: 'RESET'
+})
+
+// start timer
+export const start = () => ({
+    type: 'START'
+})
+
+// stop timer
+export const stop = () => ({
+    type: 'STOP'
 })

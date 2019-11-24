@@ -14,6 +14,8 @@ export default function (state = initState, { type }) {
                 ...state,
                 isRunning: false,
             }
+        case 'RESET':
+            return initState
         default:
             return state
     }
