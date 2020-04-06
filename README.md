@@ -3,9 +3,11 @@
 A stopwatch with lap time function build in React and using Redux with React HOOKS.
 Project also includes StoryBook which show componet breakdown
 
-## Getting Started
+demo available on [heroku](https://examples-apps.herokuapp.com/) (will take some item to spin up)
 
-A build version of stopwatch is located in the build directory 
+![preview](preview.png)
+
+## Getting Started
 
 ### Installing
 
@@ -18,6 +20,7 @@ cd into project root directory and run:
 ### Running
 
 To start Stopwatch run:
+
 ```
 npm start
 ```
