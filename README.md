@@ -5,7 +5,7 @@ Project also includes StoryBook which show componet breakdown
 
 demo available on [heroku](https://examples-apps.herokuapp.com/) (will take some item to spin up)
 
-![preview](preview.png)
+![preview](preview.PNG)
 
 ## Getting Started
 
